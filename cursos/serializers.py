@@ -6,7 +6,8 @@ class AvaliacaoSerializer(serializers.ModelSerializer):
 
     class Meta:
         extra_kwargs = {
-            'email': {'write_only': True}  # o email nao vai ser apresentado qnd alguem consultar
+            # o email nao vai ser apresentado qnd alguem consultar
+            'email': {'write_only': True}
         }
         model = Avaliacao
         #  campos para mostrar pro usuario
@@ -23,6 +24,21 @@ class AvaliacaoSerializer(serializers.ModelSerializer):
 
 
 class CursoSerializer(serializers.ModelSerializer):
+    # Nested Relationsship
+    # avaliacoes = AvaliacaoSerializer(many=True, read_only=True)
+
+    # HyperLinked Related Field Da um link das avaliacoes para evitar muitos dados na pagina
+    avaliacoes = serializers.HyperlinkedRelatedField(many=True,
+                                                     read_only=True,
+
+                                                     view_name='avaliacao-detail')
+
+    """
+    # Primary Key Related Field Ele da uma lista das avaliacoes somente por id, nao tem link
+    avaliacoes = serializers.PrimaryKeyRelatedField(many=True,
+                                                    read_only=True,
+                                                    view_name='avaliacao-detail')
+    """
 
     class Meta:
         model = Curso
@@ -31,7 +47,8 @@ class CursoSerializer(serializers.ModelSerializer):
             'titulo',
             'url',
             'criacao',
-            'ativo'
+            'ativo',
+            'avaliacoes'
         )
 
 
